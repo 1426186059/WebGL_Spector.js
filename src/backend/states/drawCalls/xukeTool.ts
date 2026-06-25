@@ -8,11 +8,24 @@ export function downloadImage(url: string, filename?: string): Promise<string> {
         const name = filename || `tex_${Date.now()}.png`;
 
         if (url.startsWith("data:")) {
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = name;
-            a.click();
-            resolve(name);
+            // readPixels 的像素 dataURL 带了 Y 翻转，这里翻回来再存
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext("2d")!;
+                ctx.scale(1, -1);
+                ctx.drawImage(img, 0, -img.height);
+                const fixed = canvas.toDataURL("image/png");
+                const a = document.createElement("a");
+                a.href = fixed;
+                a.download = name;
+                a.click();
+                resolve(name);
+            };
+            img.onerror = () => reject(new Error("加载图片失败"));
+            img.src = url;
             return;
         }
 
