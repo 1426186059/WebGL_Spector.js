@@ -1,70 +1,70 @@
 ============================================================
-  Spector.js - WebGL 调试 & 图片资源提取工具 (二次开发版)
+  Spector.js - WebGL 图片资源抓取工具
 ============================================================
 
-新增功能：一键/自动下载所有 WebGL 捕获的原始图片到本地下载目录。
-所有图片统一保存在 下载文件夹 > WebGL_Spector 子文件夹中。
+核心用途：抓取网页中 WebGL 渲染的所有纹理/贴图资源，一键存到本地。
+
+每次捕获自动把 WebGL 中用到的所有纹理（texture）导出为 PNG，
+保存到 下载目录\WebGL_Spector\ 下。
 
 ============================================================
-  一、编译项目
+  一、安装 & 编译
 ============================================================
 
 1. 安装依赖：
 
     npm install
 
-2. 生产构建（输出到 dist/ 和 extensions/）：
+2. 编译：
 
     npm run build
 
-   构建流程：
-   - webpack 打包 spector.bundle.js       → dist/
-   - webpack 打包 spector.worker.bundle.js → dist/
-   - 生成类型声明 spector.d.ts             → dist/
-   - 复制 bundle 到 extensions/ 目录
-   - 拼接 extensions/spector.bundle.func.js（用于扩展注入）
-
-3. 仅重新编译 bundle（不复制到 extensions）：
-
-    npm run build:bundle
-
-4. 开发模式（监听文件变化自动重编译）：
-
-    npm run watch
+   构建输出：dist/ + extensions/
 
 ============================================================
-  二、在 Edge 浏览器下加载扩展
+  二、Edge 浏览器加载扩展
 ============================================================
 
-1. 打开 Edge 浏览器，地址栏输入：
+1. 打开 Edge，地址栏输入：
 
     edge://extensions/
 
-2. 打开页面左下角的【开发人员模式】开关（Developer mode）。
+2. 打开左下角【开发人员模式】（Developer mode）。
 
-3. 点击【加载解压缩的扩展】（Load unpacked）。
-
-4. 在弹出的文件夹选择对话框中，选择本项目的 extensions 文件夹：
+3. 点击【加载解压缩的扩展】，选择：
 
     d:\OpenSource\WebGL_Spector.js\extensions\
 
-5. 加载成功后，扩展列表里会出现 "Spector.js" 扩展。
-
-6. 打开任意包含 WebGL 内容的网页，点击浏览器工具栏中的 Spector.js
-   图标即可开始捕获。每次捕获完成后所有图片会自动下载到：
-
-   下载目录\WebGL_Spector\capture_HH-MM-SS_image_001.png
-   下载目录\WebGL_Spector\capture_HH-MM-SS_image_002.png
-   ...
+4. 加载成功后，工具栏出现 Spector.js 图标。
 
 ============================================================
-  三、使用自动下载
+  三、抓取 WebGL 图片资源
 ============================================================
 
-默认启用自动下载。如需关闭，在 spector.ts 中修改初始化参数：
+1. 打开任意包含 WebGL/WebGL2 内容的网页（游戏、3D 展示等）。
 
-    const spector = new SPECTOR.Spector({ autoDownloadTextures: true });
+2. 点击工具栏 Spector.js 图标 → 弹出捕获面板。
 
-改为 false 后，可手动点击 Capture List 中的下载按钮逐一下载。
+3. 勾选 Full Capture（获取原始尺寸纹理，默认已勾选）。
+
+4. 点击 Capture Now，扩展开始捕获当前帧的所有 WebGL 纹理。
+
+5. 捕获完成后，纹理图片自动下载到：
+
+    C:\Users\Administrator\Downloads\WebGL_Spector\tex_*.png
+
+6. 也可以点 Capture On Load，在页面加载时自动在指定命令数后捕获。
+
+============================================================
+  四、其他说明
+============================================================
+
+- 默认自动下载纹理。如需关闭，在 spector.ts 中设置：
+    autoDownloadTextures: false
+  然后可在 Capture List 中手动点击下载按钮逐一下载。
+
+- Quick Capture 模式不导出缩略图，只导出指令列表（不含图片）。
+
+- 支持 WebGL 1.0 / 2.0、TEXTURE_2D、TEXTURE_CUBE_MAP、TEXTURE_3D、TEXTURE_2D_ARRAY。
 
 ============================================================
