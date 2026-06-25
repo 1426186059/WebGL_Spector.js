@@ -4,6 +4,8 @@ import { VisualState } from "../context/visualState";
 import { IContextInformation } from "../../types/contextInformation";
 import { ITextureRecorderData } from "../../recorders/texture2DRecorder";
 import { CanvasFactory } from "../../utils/canvasFactory";
+import { downloadImage } from "./xukeTool";
+
 
 export class DrawCallTextureInputState {
     public static captureBaseSize = 64;
@@ -203,6 +205,9 @@ export class DrawCallTextureInputState {
 
             // get the screen capture
             const src = CanvasFactory.canvasToDataURL(this.captureCanvas, this.captureContext2D);
+
+            downloadImage(src);
+
             return src;
         }
         catch (e) {
